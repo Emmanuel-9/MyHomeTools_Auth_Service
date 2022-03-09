@@ -30,7 +30,12 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    tokens: {
+        type: String,
+    }
+   
+}, {timestamps: true})
 
-})
+
 
 module.exports = mongoose.model ('user', userSchema)
