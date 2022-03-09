@@ -1,13 +1,15 @@
+require("dotenv").config()
+require("./config/db").connect()
+
 const express = require('express');
-
 const app = express();
-const port = 4000
-
-app.get('/', (req, res) => {
-    res.send("hurray")
-})
+const cors = require("cors")
+app.use( cors())
+app.use(express.json())
 
 
-app.listen(port, () => {
-    console.log("hurray!!")
-});
+app.use("/auth", require('./routes/authRoute'))
+
+
+
+module.exports = app
