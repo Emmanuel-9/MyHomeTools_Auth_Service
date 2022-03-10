@@ -1,25 +1,7 @@
-require ( 'dotenv' ).config();
-const express = require('express');
-require ('./config/db').connect();
+const http = require("http")
+const app = require("./app")
+const server = http.createServer(app)
 
-
-//import routes
-const authRoutes = require('./routes/authRoute');
-const UserModel = require('./models/User');
-
-//call express app
-const app = express();
-app.use (express.json())
-
- //routes middleware
-//app.use('/routes', authRoutes);
-app.use ("/auth" , require ('./routes/authRoute'));
-
-//specify the port
-const port = process.env.PORT
-
-//Listen for connection
-app.listen (port, () => {
-    console.log ('server listening on port ' + port)
+server.listen(4000, () => {
+  console.log("Server running on port 4000 ...")
 })
-
