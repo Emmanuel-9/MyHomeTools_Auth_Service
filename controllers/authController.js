@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
 
     const user = await User.findOne({ email: req.body.email })
 
-    if(user.isAdmin = true && (await bcrypt.compare(password, user.password)))
+    if((await bcrypt.compare(password, user.password)))
     {
        //generating a token when the admin logs in 
       const token = jwt.sign(
@@ -21,18 +21,18 @@ exports.login = async (req, res) => {
           id: user._id,
           email: user.email,
         },
-        process.env.TOKEN_KEY,
+        process.env.JWT_SECRET,
         { 
             expiresIn: "5h" 
         }
       )
-      res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
+    //   res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
 
       user.token = token
 
-      res.status(201).json(user)
     }
-    res.status(400).send({ message: "Invalid Credentials" })
+	res.status(201).json(user)
+    // res.status(400).send({ message: "Invalid Credentials" })
   } catch (err) {
     res.status(500).json(err)
   }
