@@ -15,6 +15,7 @@ exports.login = async (req, res) => {
 
     if(user.isAdmin = true && (await bcrypt.compare(password, user.password)))
     {
+       //generating a token when the admin logs in 
       const token = jwt.sign(
         {
           id: user._id,
@@ -25,6 +26,7 @@ exports.login = async (req, res) => {
             expiresIn: "5h" 
         }
       )
+      res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
 
       user.token = token
 
@@ -34,4 +36,9 @@ exports.login = async (req, res) => {
   } catch (err) {
     res.status(500).json(err)
   }
+}
+
+exports.logout = (req, res) => {
+    res.clearCookie('cookie')
+    res.redirect('/login')
 }
