@@ -6,34 +6,39 @@ const bcrypt = require("bcryptjs")
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
-
-    if (!(email && password)) {
-      res.status(400).send("All inputs are required to proceed")
+    if ( !( email && password ) ) {
+      res.status( 400 ).send( "All inputs are required to proceed" )
     }
 
-    const user = await User.findOne({ email: req.body.email })
-
-    if (await bcrypt.compare(password, user.password)) {
-      //generating a token when the admin logs in
-      const token = jwt.sign(
-        {
-          id: user._id,
-          email: user.email,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "5h",
-        }
-      )
-      //   res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
-
-      user.token = token
+    const user = await User.findOne( { email: req.body.email } )
+    
+    if ( !user ) {
+      res.status( 404 ).send( "Invalid Credentials" )
     }
-    res.status(201).json(user)
-    // res.status(400).send({ message: "Invalid Credentials" })
-  } catch (err) {
-    res.status(500).json(err)
-  }
+    else {
+
+      if ( await bcrypt.compare( password, user.password ) ) {
+        const token = jwt.sign(
+          {
+            id: user._id,
+            email: user.email,
+          },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "5h",
+          }
+        )
+        //   res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
+
+        user.token = token
+      }
+      res.status( 201 ).json( user )
+    }
+      // res.status(400).send({ message: "Invalid Credentials" })
+    } catch ( err ) {
+      res.status( 500 ).send( err.message )
+    }
+  
 }
 
 exports.logout = (req, res) => {
