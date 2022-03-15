@@ -12,7 +12,8 @@ app.use(express.json())
 app.use(cookieParser())
 
 
-app.use("/auth", require('./routes/authRoute'))
+app.use( "/auth", require( './routes/authRoute' ) )
+app.use('/user', require( './routes/userRoute' ))
 
 
 
