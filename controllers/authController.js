@@ -6,14 +6,14 @@ const bcrypt = require("bcryptjs")
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
-console.log(email, password)
+    console.log(email, password)
     if ( !( email && password ) ) {
       res.status( 400 ).send( "All inputs are required" )
     }
-
-    const user = await User.findOne( { email } )
-    console.log(user)
-
+    else {
+      const user = await User.findOne( { email } )
+      console.log('user from db',user)
+      
       if ( user && (await bcrypt.compare( password, user.password ) )) {
         const token = jwt.sign(
           {
@@ -24,19 +24,24 @@ console.log(email, password)
           {
             expiresIn: "5h",
           }
-        )
-        //   res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
-
-        user.token = token
-
+          )
+          //   res.cookie('cookie', token, {maxAge: 200000, httpOnly: true})
+          
+          user.token = token
+          
         res.status( 201 ).json( user )
+        console.log('user with token', user)
       }
-      res.status(400).send({ message: "Invalid Credentials" })
-    
-    } catch ( err ) {
-      res.status( 500 ).send( err.message )
-    }
-  
+      else {
+        
+        res.status(400).send({ message: "Invalid Credentials" })
+      }
+        
+      }
+      } catch ( err ) {
+        res.status( 500 ).send( err.message )
+      }
+      
 }
 
 exports.logout = (req, res) => {
